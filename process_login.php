@@ -1,32 +1,39 @@
 <?php
 require 'password.php';
 require 'includes/db_connection.php';
+require_once 'spyc.php';
 
-$user = $_POST['email'];
+$cfg = spyc_load_file('config.yml');
+
+$user = $_POST['uname'];
 $pass = $_POST['pass'];
-try {
-    $sql = 'select password, role from users where username = :user limit 1';
-    $stmt = $db->prepare($sql);
-    $stmt->bindParam(':user', $user);
-    $stmt->execute();
-    $row = $stmt->fetch(PDO::FETCH_OBJ);
-    // var_dump($stmt);
-    // var_dump($row);
 
-    if (password_verify($pass, $row->password)){
-    // if (crypt($pass, $row->hash) === $user->hash){
-      // header('Location: secure_page.html');
-      session_start();
-      $_SESSION['login'] = true;
-      $_SESSION['role'] = $row->role;
-      echo "wizard.php";
+define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
+
+$ldap_conn = ldap_connect($ldap_server) or die("Failed to connect to LDAP server.");
+$user_dn = sprintf($cfg['userdn'], $user);
+
+ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
+
+function is_in_group($ad, $userdn, $groupdn) {
+    $attributes = array('members');
+    $result = ldap_read($ad, $userdn, "(memberof={$groupdn})", $attributes);
+    if ($result === false) { return false; };
+    $entries = ldap_get_entries($ad, $result);
+    return ($entries['count'] > 0);
+}
+
+$binding = ldap_bind($ldap_conn, $userdn, $pass);
+if (!$binding) {
+    header("HTTP/1.1 401 Unauthorized");
+    echo "Invalid Login";
+} else {
+    session_start();
+    $_SESSION['login'] = true;
+    if (is_in_group($ldap_conn, $userdn, $cfg['admin_group_dn'])) {
+        $_SESSION['role'] = "admin";
     } else {
-      header("HTTP/1.1 401 Unauthorized");
-      echo "Invalid Login";
+        $_SESSION['role'] = "user";
     }
-
+    echo "wizard.php";
 }
-catch(PDOException $e) {
-    echo $e->getMessage();
-}
-?>

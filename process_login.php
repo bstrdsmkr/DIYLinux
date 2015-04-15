@@ -1,17 +1,15 @@
 <?php
 require 'password.php';
-require 'includes/db_connection.php';
-require_once 'spyc.php';
-
-$cfg = spyc_load_file('config.yml');
+require_once 'includes/spyc.php';
+require_once 'config.php';
 
 $user = $_POST['uname'];
 $pass = $_POST['pass'];
 
 define(LDAP_OPT_DIAGNOSTIC_MESSAGE, 0x0032);
 
-$ldap_conn = ldap_connect($ldap_server) or die("Failed to connect to LDAP server.");
-$user_dn = sprintf($cfg['userdn'], $user);
+$ldap_conn = ldap_connect($cfg['ldap']['server_url']) or die("Failed to connect to LDAP server.");
+$user_dn = sprintf($cfg['ldap']['userdn'], $user);
 
 ldap_set_option($ldap_conn, LDAP_OPT_PROTOCOL_VERSION, 3);
 
@@ -23,14 +21,14 @@ function is_in_group($ad, $userdn, $groupdn) {
     return ($entries['count'] > 0);
 }
 
-$binding = ldap_bind($ldap_conn, $userdn, $pass);
+$binding = ldap_bind($ldap_conn, $user_dn, $pass);
 if (!$binding) {
     header("HTTP/1.1 401 Unauthorized");
     echo "Invalid Login";
 } else {
     session_start();
     $_SESSION['login'] = true;
-    if (is_in_group($ldap_conn, $userdn, $cfg['admin_group_dn'])) {
+    if (is_in_group($ldap_conn, $userdn, $cfg['ldap']['admin_group_dn'])) {
         $_SESSION['role'] = "admin";
     } else {
         $_SESSION['role'] = "user";

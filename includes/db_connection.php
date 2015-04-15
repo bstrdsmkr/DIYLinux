@@ -1,9 +1,10 @@
 <?php
+require_once 'config.php';
 
-$db_host = "localhost";
-$db_user = "c2230a15";
-$db_pass = "c2230a15";
-$db_name = "c2230a15test";
-
-$db = new PDO("mysql:host=$db_host;dbname=$db_name", $db_user, $db_pass);
-?>
+if (file_exists($cfg['db']['file'])) {
+    $db = new PDO("sqlite:".$cfg['db']['file']);
+} else {
+    touch($cfg['db']['file']);
+    $db = new PDO("sqlite:".$cfg['db']['file']);
+    $db->exec('create table distros (id INTEGER PRIMARY KEY, icon, name, description)');
+}

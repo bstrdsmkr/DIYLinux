@@ -1,6 +1,5 @@
 <?php
 require 'password.php';
-require_once 'includes/spyc.php';
 require_once 'config.php';
 
 $user = $_POST['uname'];

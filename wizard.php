@@ -31,12 +31,12 @@ require 'includes/db_connection.php';
         </ul>
       </div>
     </div>
-    <?php if ($_SESSION['role'] == 1): ?>
-      <!-- <a href="distro_admin.php" class="btn btn-warning">Edit</a> -->
+
+<?php if ($_SESSION['role'] == "admin") : ?>
     <div id="btn-drawer" class="pull-right">
       <a href="distro_admin.php" id="edit-btn" class="btn btn-success btn-fab btn-fab-float mdi-content-create" tooltip-title="Edit"></a>
     </div>
-    <?php endif; ?>
+<?php endif; ?>
 
     <!-- multistep form -->
     <form id="msform">
@@ -53,10 +53,11 @@ require 'includes/db_connection.php';
       <!-- fieldsets -->
       <fieldset id="distro_fieldset">
         <h2 class="fs-title">Select a Distribution</h2>
-        <?php
+<?php
 $sql = "select * from distros";
 $results = $db->query($sql);
-foreach ($results as $row): ?>
+foreach ($results as $row) :
+?>
         <div class="list-group">
           <div class="list-group-item col-sm-3">
             <div class="list-group-separator"></div>
@@ -72,7 +73,9 @@ foreach ($results as $row): ?>
             <div class="list-group-separator"></div>
           </div>
         </div>
-      <?php endforeach; ?>
+<?php
+endforeach;
+?>
         <div class="col-sm-12">
           <a class="btn btn-success next">Next</a>
         </div>

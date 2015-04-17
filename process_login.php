@@ -27,7 +27,7 @@ if (!$binding) {
 } else {
     session_start();
     $_SESSION['login'] = true;
-    if (is_in_group($ldap_conn, $userdn, $cfg['ldap']['admin_group_dn'])) {
+    if (is_in_group($ldap_conn, $user_dn, $cfg['ldap']['admin_group_dn'])) {
         $_SESSION['role'] = "admin";
     } else {
         $_SESSION['role'] = "user";

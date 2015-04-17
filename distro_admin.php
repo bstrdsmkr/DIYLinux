@@ -51,13 +51,10 @@
                   <h2 class="fs-title form-group">Details</h2>
 
                   <div class="form-group">
-                    <input class="form-control floating-label" id="focusedInput" type="text" required placeholder="Icon Path"   name="icon"     data-hint="Please choose an icon">
+                    <input class="form-control floating-label" id="focusedInput" type="text" required placeholder="Distro"      name="name" data-hint="Please enter a distribution name">
                   </div>
                   <div class="form-group">
-                    <input class="form-control floating-label" id="focusedInput" type="text" required placeholder="Distro"      name="name"     data-hint="Please enter a distribution name">
-                  </div>
-                  <div class="form-group">
-                    <input class="form-control floating-label" id="focusedInput" type="text" required placeholder="Description" name="description" data-hint="Please enter a description for this distribution">
+                    <input class="form-control floating-label" id="focusedInput" type="text" required placeholder="Description" name="desc" data-hint="Please enter a description for this distribution">
                   </div>
 
               </fieldset>
@@ -74,28 +71,26 @@
       <table class="table table-striped table-hover dataTable" id="datatable">
         <thead>
           <tr>
-            <th colspan="1" rowspan="1" tabindex="0">Icon</th>
+            <!-- <th colspan="1" rowspan="1" tabindex="0">Icon</th> -->
             <th colspan="1" rowspan="1" tabindex="0">Distro</th>
             <th colspan="1" rowspan="1" tabindex="0">Description</th>
           </tr>
         </thead>
           <tbody id="contact-table">
-            <?php
-              $sql = "select * from distros";
-              $results = $db->query($sql);
-              $i=0;
-              foreach($results as $row){
-                $class = ( $i%2==0 ? 'even' : 'odd');
-                // echo sprintf('<tr rowid="%s" class="%s">', $row["id"], $class);
-                echo sprintf('<tr rowid="%s">', $row["id"]);
-                echo sprintf('<td><span data-name="icon" data-pk="%s" class="xedit icon">%s</span></td>', $row["id"], $row["icon"]);
-                echo sprintf('<td><span data-name="name" data-pk="%s" class="xedit name ">%s</span></td>', $row["id"], $row["name"]);
-                echo sprintf('<td><span data-name="description" data-pk="%s" class="xedit description ">%s</span></td>', $row["id"], $row["description"]);
-                echo sprintf('<td class="delete-field"><a href="#" class="btn btn-fab btn-danger mdi-content-clear delete-btn"></a></td>');
-                echo sprintf('</tr>');
-                $i++;
-              }
-            ?>
+<?php
+$sql = "SELECT * FROM distros";
+$results = $db->query($sql);
+$i=0;
+foreach ($results as $row) {
+    $class = ( $i%2==0 ? 'even' : 'odd');
+    echo sprintf('<tr rowid="%s">', $row["id"]);
+    echo sprintf('<td><span data-name="name" data-pk="%s" class="xedit name ">%s</span></td>', $row["id"], $row["name"]);
+    echo sprintf('<td><span data-name="desc" data-pk="%s" class="xedit description ">%s</span></td>', $row["id"], $row["desc"]);
+    echo sprintf('<td class="delete-field"><a href="#" class="btn btn-fab btn-danger mdi-content-clear delete-btn"></a></td>');
+    echo sprintf('</tr>');
+    $i++;
+}
+?>
           </tbody>
         </table>
     </div>
@@ -145,9 +140,8 @@
       function createRow(data){
         if (data && data.id) { //record created, response like {"id": 2}
           var new_row = $('<tr rowid="'+data.id+'">' +
-            '<td><span data-name="icon" data-pk="'+data.id+'" class="xedit icon">'+data.icon+'</span></td>' +
             '<td><span data-name="name" data-pk="'+data.id+'" class="xedit name">'+data.name+'</span></td>' +
-            '<td><span data-name="description" data-pk="'+data.id+'" class="xedit description">'+data.description+'</span></td>' +
+            '<td><span data-name="desc" data-pk="'+data.id+'" class="xedit description">'+data.desc+'</span></td>' +
             '<td class="delete-field"><a href="javascript:void(0)" class="btn btn-danger btn-fab btn-raised mdi-content-clear"></a></td>' +
           '</tr>');
 

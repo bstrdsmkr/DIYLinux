@@ -34,7 +34,11 @@ require 'includes/db_connection.php';
 
 <?php if ($_SESSION['role'] == "admin") : ?>
     <div id="btn-drawer" class="pull-right">
-      <a href="distro_admin.php" id="edit-btn" class="btn btn-success btn-fab btn-fab-float mdi-content-create" tooltip-title="Edit"></a>
+      <a href="distro_admin.php"
+         id="edit-btn"
+         class="btn btn-success btn-fab btn-fab-float mdi-content-create"
+         tooltip-title="Edit">
+      </a>
     </div>
 <?php endif; ?>
 
@@ -55,8 +59,7 @@ require 'includes/db_connection.php';
         <h2 class="fs-title">Select a Distribution</h2>
 <?php
 $sql = "select * from distros";
-$results = $db->query($sql);
-foreach ($results as $row) :
+foreach ($db->query($sql) as $row) :
 ?>
         <div class="list-group">
           <div class="list-group-item col-sm-3">
@@ -68,7 +71,7 @@ foreach ($results as $row) :
             </div>
             <div class="row-content">
               <h4 class="list-group-item-heading"><?php echo $row['name']; ?></h4>
-              <p class="list-group-item-text"><?php echo $row['description']; ?></p>
+              <p class="list-group-item-text"><?php echo $row['desc']; ?></p>
             </div>
             <div class="list-group-separator"></div>
           </div>
